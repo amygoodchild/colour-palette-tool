@@ -7,7 +7,7 @@ import Close from '../icons/Close';
 
 export default function PaletteDrawerControls({ drawerSize, onSizeChange, onCloseDrawer }){
   return(
-    <div className="flex justify-between w-full h-6 m-5 pr-5">
+    <div className="flex justify-between w-full h-6 mb-5">
       <div className="LEFT flex gap-2">
         {
           drawerSize === 'standard' ? 
@@ -15,7 +15,7 @@ export default function PaletteDrawerControls({ drawerSize, onSizeChange, onClos
           <ChevronLeft clicker={() => onSizeChange("standard")} />
         }
       </div>
-      <div className="RIGHT flex mr-5">
+      <div className="RIGHT flex">
         <Close clicker={() => onCloseDrawer() } />
       </div>
     </div>
