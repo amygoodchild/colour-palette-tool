@@ -1,3 +1,4 @@
+import React from 'react';
 import "./globals.css";
 import Link from 'next/link';
 import { Raleway } from "next/font/google";
@@ -28,7 +29,7 @@ export default function RootLayout({ children }) {
           </Link>
 
           {/* Logo */} 
-          <div className="pt-px font-light">Good at Palettes</div>
+          <div className="pt-px font-light">GoodAtPalettes</div>
         </div>
 
         <div className="content">{children}</div>
