@@ -3,27 +3,21 @@
 import {React, useState} from 'react';
 import PaletteDrawerControls from './PaletteDrawerControls';
 
-export default function PaletteDrawer({onClose}){
+export default function PaletteDrawer({view, isClosing, onClose}){
   const [drawerSize, setDrawerSize] = useState('standard');
+  
+  const handleSizeChange = (state) => setDrawerSize(state); 
 
-  const handleSizeChange = (state) => {
-    setDrawerSize(state); 
-  };
+  const baseClass ="DRAWER transition-all duration-400 bg-white h-screen fixed z-10";
 
-  const handleClose = () => { 
-    onClose();
-  };
+  const drawerWidth = drawerSize === 'standard' ? 'w-4/6' : 'w-1/3';
+  const visibilityClass = view === 'buttons' ? 'hidden' : isClosing ? `${drawerWidth} -right-full` : `${drawerWidth} right-0`;
 
-  const c ="transition-width duration-300 bg-white h-screen fixed z-10 right-0"
-
-  const drawerClasses = {
-    standard: c + " w-4/6",
-    reduced: c + " w-1/3", 
-  };
+  const cl = `${baseClass} ${visibilityClass}`;
 
   return (
-    <div className={drawerClasses[drawerSize]}>
-      <PaletteDrawerControls drawerSize={drawerSize} onSizeChange={handleSizeChange}  onCloseDrawer={handleClose} />
+    <div className={cl}>
+      <PaletteDrawerControls drawerSize={drawerSize} onSizeChange={handleSizeChange} onCloseDrawer={onClose} />
     </div>
   )
-}
+} 
