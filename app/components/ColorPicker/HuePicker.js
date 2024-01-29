@@ -1,15 +1,16 @@
 
-import { React, useRef, useEffect } from 'react';
+import { React, useState, useRef, useEffect } from 'react';
 import Picker from './Picker';
 
-export default function HuePicker({ hue, onWidthChange, width, onHueChange}) {
+export default function HuePicker({ onHueChange}) {
   const huePickerRef = useRef(null);
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
     if(huePickerRef.current){
-      onWidthChange(huePickerRef.current.offsetWidth);
+      setWidth(huePickerRef.current.offsetWidth);
     }
-  }, [huePickerRef, onWidthChange]);
+  }, [huePickerRef]);
 
   const handleHueChange = (x, y) =>{
     onHueChange(x);
@@ -32,7 +33,7 @@ export default function HuePicker({ hue, onWidthChange, width, onHueChange}) {
           }}
        >
 
-        <Picker xpos={0} xmin={0} xmax={360} ypos={0} ymin={0} ymax={0} width={width} height={0} onPosChange={(x, y) => handleHueChange(x)} />
+        <Picker xpos={0} xmin={0} xmax={360} ypos={12} ymin={0} ymax={0} width={width} height={0} onPosChange={(x, y) => handleHueChange(x)} />
       </div>
     </div>
   )

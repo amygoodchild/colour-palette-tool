@@ -1,27 +1,18 @@
 import {React, useState, useEffect} from 'react';
 import { useDrag } from '@use-gesture/react';
+import { mapNumber, clampNumber } from '../../utils/Maths';
 
 export default function Picker({xpos, xmin, xmax, ypos, ymin, ymax, width, height, onPosChange}){
   const [xPos, setxPos] = useState(xpos);
   const [yPos, setyPos] = useState(ypos);
 
-  const [xVal, setxVal] = useState();
-  const [yVal, setyVal] = useState();
-
-  const xRange = xmax - xmin;
-  const yRange = ymax - ymin;
+  const [xVal, setxVal] = useState(mapNumber(xpos, 0, width, xmin, xmax));
+  const [yVal, setyVal] = useState(mapNumber(ypos, 0, width, xmin, xmax));
 
   useEffect(() => {
-    let newXval = (xRange * (xPos / 100));
-    if (newXval < 0 || newXval== NaN) newXval = 0;
-    setxVal(newXval);
-
-    let newYval = (yRange * (yPos / 100));
-    if (newYval < 0 || newYval== NaN) newYval = 0;
-    setyVal(newYval);
-
-    handlePosChange(xVal, yVal);
-  });
+    setxPos(xpos);
+    setyPos(ypos);
+  }, [height, width]);
 
   const handlePosChange = () => {
     onPosChange(xVal, yVal);
@@ -29,17 +20,27 @@ export default function Picker({xpos, xmin, xmax, ypos, ymin, ymax, width, heigh
 
   const bind = useDrag(({ down, movement: [mx, my], memo = {x: xPos, y: yPos} }) => {
     if(down){
-      let newX = memo.x + (mx / width) * 100;
-      newX = Math.max(0, Math.min(newX, 100)); 
+      let newX = clampNumber(memo.x + mx, 0, width);
       setxPos(newX);
-      setyPos(memo.y + (my / height) * 100);
+
+      let newY = clampNumber(memo.y + my, 0, height);
+      if (height < 100) newY = 12;
+      setyPos(newY);
+
+      let newXval = mapNumber(newX, 0, width, xmin, xmax);
+      setxVal(newXval);
+  
+      let newYval = mapNumber(newY, 0, height, ymin, ymax);
+      setyVal(newYval);
+
+      handlePosChange(newXval, newXval);
     }
     return memo;
   });
 
   return(
-    <div className="w-6 h-6 rounded-full ring-2 ring-black cursor-pointer"
-    style={{ position: 'relative', left: `calc(${xPos}% - 10px`, top: `${yPos}px` }}
+    <div className="w-4 h-4 rounded-full border-white border ring-2 ring-black cursor-pointer"
+    style={{ position: 'relative',  'touchAction': `none`, left: `${xPos-8}px`, top: `${yPos-8}px` }}
       {...bind()}>
     </div>
   )

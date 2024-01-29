@@ -3,25 +3,20 @@ import React, { useState } from 'react';
 import SatLiPicker from './SatLiPicker';
 import HuePicker from './HuePicker';
 
-export default function ColorPicker(){
-  const [hue, setHue] = useState(60);
-  const [sat, setSat] = useState(60);
-  const [lig, setLig] = useState(80);
-
-  const [huePickerWidth, setHuePickerWidth] = useState(0);
-
-  const handleHuePickerWidthChange = (width) => {
-    setHuePickerWidth(width);
-  };
+export default function ColorPicker({onColorChange, currentColorHSB}){
 
   const handleHueChange = (x) => {
-    setHue(x);
+    onColorChange(0, x);
+  }
+
+  const handleSatBriChange = (x, y) => {
+    onColorChange(1, x, y);
   }
 
   return ( 
     <div className="COLOR-PICKER">
-      <SatLiPicker hue={hue} sat={sat} lig={lig} />
-      <HuePicker hue={hue} onWidthChange={handleHuePickerWidthChange} width={huePickerWidth} onHueChange={(x) => handleHueChange(x)} />
+      <SatLiPicker hue={currentColorHSB.hue} onSatLiChange={(x, y) => handleSatBriChange(x, y)} />
+       <HuePicker onHueChange={(x) => handleHueChange(x)} />
     </div>
   )
 }
