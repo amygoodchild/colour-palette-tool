@@ -6,6 +6,7 @@ import PaletteDrawer from '../components/PaletteDrawer';
 import PaletteButtons from '../components/PaletteButtons';
 import { HSBtoHSL } from '../utils/ConvertColors';
 import Header from '../components/Header';
+import { mapNumber, clampNumber } from '../utils/Maths';
 
 // Custom hook to control whether page shows the buttons or the drawer
 function useToggleView(){
@@ -45,43 +46,36 @@ export default function PalettePage() {
   const createBackgroundColor = () => openDrawer();
   const createForegroundColor = () => openDrawer();
   
+  const handleHueChange = (hue) => {
+    if (hue == undefined) return;
 
-  // Color change functions
-  const handleColorChange = (type, a, b) => {  
-    let hsl;
+    hue = clampNumber(mapNumber(hue, 0, 100, 0, 360), 0, 360);
 
-    // Changing hue 
-    if (type==0){
-      if (a == undefined) return;
-      const hue = a;
-      setCurrentColorHSB({hue: hue, sat: currentColorHSB.sat, bri: currentColorHSB.bri})
-      hsl = HSBtoHSL(hue, currentColorHSB.sat, currentColorHSB.bri);
-    }
-
-    // Changing saturation and lightness
-    if (type==1){
-      if (a == undefined || b == undefined) return;
-      const sat = a;
-      const lig = 100-b;
-      setCurrentColorHSB({hue: currentColorHSB.hue, sat: sat, bri: lig})
-      hsl = HSBtoHSL(currentColorHSB.hue, sat, lig);
-    }
+    setCurrentColorHSB({hue: hue, sat: currentColorHSB.sat, bri: currentColorHSB.bri})
+    let hsl = HSBtoHSL(hue, currentColorHSB.sat, currentColorHSB.bri);
 
     setCurrentColorHSL({hue: hsl.h, sat: hsl.s, lig: hsl.l})
-
-    // console.log(currentColorHSB)
-    // console.log(currentColorHSL)
-    // console.log("----")
-
   }
 
+  const handleSatBrichange = (sat, bri) => {
+    bri = 100 - bri;
+   
+    setCurrentColorHSB({hue: currentColorHSB.hue, sat: sat, bri: bri})
+    let hsl = HSBtoHSL(currentColorHSB.hue, sat, bri);
+    setCurrentColorHSL({hue: hsl.h, sat: hsl.s, lig: hsl.l})
+  }
+
+
   return (
-    <div>
-      <Header brightness={currentColorHSB.bri} />
+    <div className="overflow-hidden">
+      <Header paletteColor={currentColorHSB} />
       <div className="flex h-screen w-screen">
         <Palette currentColorHSL={currentColorHSL} currentColorHSB={currentColorHSB}  />
+        
         <PaletteDrawer view={view} isClosing={drawerIsClosing} onClose={closeDrawer} 
-          onColorChange={handleColorChange} currentColorHSB={currentColorHSB}  />
+                  currentColorHSB={currentColorHSB}  
+          onHueChange={(x) => handleHueChange(x)} onSatBriChange={(sat, bri) => handleSatBrichange(sat, bri)}
+          />
         { view === "buttons" ? <PaletteButtons brightness={currentColorHSB.bri} onBackgroundClick={createBackgroundColor} onForegroundClick={createForegroundColor}  /> : null} 
       </div>
     </div>

@@ -1,21 +1,15 @@
-
-import { React, useState, useRef, useEffect } from 'react';
+import { React } from 'react';
 import Picker from './Picker';
+import { useMeasure } from "@uidotdev/usehooks";
 
 export default function HuePicker({ onHueChange}) {
-  const huePickerRef = useRef(null);
-  const [width, setWidth] = useState(0);
 
-  useEffect(() => {
-    if(huePickerRef.current){
-      setWidth(huePickerRef.current.offsetWidth);
-    }
-  }, [huePickerRef]);
+  const [huePickerRef, { width, height }] = useMeasure();
 
-  const handleHueChange = (x, y) =>{
+  const handleHueChange = (x) =>{
     onHueChange(x);
   }
-
+  
   return(
     <div ref={huePickerRef}>
       <div 
@@ -33,7 +27,7 @@ export default function HuePicker({ onHueChange}) {
           }}
        >
 
-        <Picker xpos={0} xmin={0} xmax={360} ypos={12} ymin={0} ymax={0} width={width} height={0} onPosChange={(x, y) => handleHueChange(x)} />
+        <Picker xStart={0} yStart={12} width={width} height={0} onPosChange={(x, y) => handleHueChange(x)} />
       </div>
     </div>
   )

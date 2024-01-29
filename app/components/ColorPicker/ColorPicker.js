@@ -1,22 +1,15 @@
 
 import React, { useState } from 'react';
-import SatLiPicker from './SatLiPicker';
+import SatBriPicker from './SatBriPicker';
 import HuePicker from './HuePicker';
 
-export default function ColorPicker({onColorChange, currentColorHSB}){
-
-  const handleHueChange = (x) => {
-    onColorChange(0, x);
-  }
-
-  const handleSatBriChange = (x, y) => {
-    onColorChange(1, x, y);
-  }
+export default function ColorPicker({onHueChange, onSatBriChange, currentColorHSB}){
 
   return ( 
     <div className="COLOR-PICKER">
-      <SatLiPicker hue={currentColorHSB.hue} onSatLiChange={(x, y) => handleSatBriChange(x, y)} />
-       <HuePicker onHueChange={(x) => handleHueChange(x)} />
+      <SatBriPicker hue={currentColorHSB.hue} 
+        onSatBriChange={(sat, bri) => onSatBriChange(sat, bri)} />
+        <HuePicker onHueChange={(hue) => onHueChange(hue)} />
     </div>
   )
 }
