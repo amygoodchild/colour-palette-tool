@@ -4,14 +4,14 @@ import { React, useState, useEffect } from 'react';
 export default function Header({paletteColor}){
   const [color, setColor] = useState("white");
 
-  const {hue, sat, bri} = paletteColor;
+  const {h, s, b} = paletteColor;
 
   useEffect(() => {
 
     let satBoundary = 60;
-    if (hue > 38 && hue < 197) satBoundary = 100;
+    if (h > 38 && h < 197) satBoundary = 100;
 
-    if (bri < 80 || sat > satBoundary) setColor("white");
+    if (b < 80 || s > satBoundary) setColor("white");
     else setColor("black");
   }, [paletteColor])
   
@@ -27,7 +27,7 @@ export default function Header({paletteColor}){
       </Link>
 
       {/* Logo */} 
-      <div className={`pt-px font-light ${color === "white" ? "text-white" : "text-black"}`}>GoodAtPalettes</div>
+      <div className={`pt-px font-light ${color === "white" ? "text-white" : "text-black"} select-none`}>GoodAtPalettes</div>
     </div>
   )
 }

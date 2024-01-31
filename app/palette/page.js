@@ -4,9 +4,9 @@ import { React, useState } from 'react';
 import Palette from '../components/Palette';
 import PaletteDrawer from '../components/PaletteDrawer';
 import PaletteButtons from '../components/PaletteButtons';
-import { HSBtoHSL } from '../utils/ConvertColors';
+import { HSBtoHSL, HSBtoRGB, HSBtoHex } from '../utils/ConvertColors';
 import Header from '../components/Header';
-import { mapNumber, clampNumber } from '../utils/Maths';
+import { mapNumber, clampNumber, floorAll } from '../utils/Maths';
 
 // Custom hook to control whether page shows the buttons or the drawer
 function useToggleView(){
@@ -28,8 +28,10 @@ export default function PalettePage() {
   const { view, showDrawer, showButtons } = useToggleView();
   const [drawerIsClosing, setDrawerIsClosing] = useState(false);
 
-  const [currentColorHSB, setCurrentColorHSB] = useState({hue: 0, sat: 0, bri: 0});
-  const [currentColorHSL, setCurrentColorHSL] = useState({hue: 0, sat: 0, lig: 0});
+  const [currentColorHSB, setCurrentColorHSB] = useState({h: 0, s: 0, b: 0});
+  const [currentColorHSL, setCurrentColorHSL] = useState({h: 0, s: 0, l: 0});
+  const [currentColorRGB, setCurrentColorRGB] = useState({r: 0, g: 0, b: 0});
+  const [currentColorHex, setCurrentColorHex] = useState("#000000");
 
   // Drawer open and close functions
   
@@ -48,23 +50,29 @@ export default function PalettePage() {
   
   const handleHueChange = (hue) => {
     if (hue == undefined) return;
-
     hue = clampNumber(mapNumber(hue, 0, 100, 0, 360), 0, 360);
 
-    setCurrentColorHSB({hue: hue, sat: currentColorHSB.sat, bri: currentColorHSB.bri})
-    let hsl = HSBtoHSL(hue, currentColorHSB.sat, currentColorHSB.bri);
-
-    setCurrentColorHSL({hue: hsl.h, sat: hsl.s, lig: hsl.l})
+    setAllColorMediums({h: hue, s: currentColorHSB.s, b: currentColorHSB.b})
   }
 
   const handleSatBrichange = (sat, bri) => {
     bri = 100 - bri;
-   
-    setCurrentColorHSB({hue: currentColorHSB.hue, sat: sat, bri: bri})
-    let hsl = HSBtoHSL(currentColorHSB.hue, sat, bri);
-    setCurrentColorHSL({hue: hsl.h, sat: hsl.s, lig: hsl.l})
+    setAllColorMediums({h: currentColorHSB.h, s: sat, b:bri});
   }
 
+  const setAllColorMediums = (newHSB) => {
+    let hsb = floorAll(newHSB);
+    setCurrentColorHSB({h: hsb.h, s: hsb.s, b: hsb.b});
+
+    let hsl = floorAll(HSBtoHSL(newHSB.h, newHSB.s, newHSB.b));
+    setCurrentColorHSL({h: hsl.h, s: hsl.s, l: hsl.l})
+
+    let rgb = floorAll(HSBtoRGB(newHSB.h, newHSB.s, newHSB.b));
+    setCurrentColorRGB({r: rgb.r, g: rgb.g, b: rgb.b})
+
+    let hex = HSBtoHex(rgb.r, rgb.g, rgb.b).toUpperCase();
+    setCurrentColorHex(hex);
+  }
 
   return (
     <div className="overflow-hidden">
@@ -73,10 +81,10 @@ export default function PalettePage() {
         <Palette currentColorHSL={currentColorHSL} currentColorHSB={currentColorHSB}  />
         
         <PaletteDrawer view={view} isClosing={drawerIsClosing} onClose={closeDrawer} 
-                  currentColorHSB={currentColorHSB}  
+          currentColorHSB={currentColorHSB}  currentColorHSL={currentColorHSL} currentColorRGB={currentColorRGB} currentColorHex={currentColorHex}
           onHueChange={(x) => handleHueChange(x)} onSatBriChange={(sat, bri) => handleSatBrichange(sat, bri)}
           />
-        { view === "buttons" ? <PaletteButtons brightness={currentColorHSB.bri} onBackgroundClick={createBackgroundColor} onForegroundClick={createForegroundColor}  /> : null} 
+        { view === "buttons" ? <PaletteButtons currentColorHSB={currentColorHSB} onBackgroundClick={createBackgroundColor} onForegroundClick={createForegroundColor}  /> : null} 
       </div>
     </div>
   );

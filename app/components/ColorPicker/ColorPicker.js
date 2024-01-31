@@ -7,7 +7,7 @@ export default function ColorPicker({onHueChange, onSatBriChange, currentColorHS
 
   return ( 
     <div className="COLOR-PICKER">
-      <SatBriPicker hue={currentColorHSB.hue} 
+      <SatBriPicker hue={currentColorHSB.h} 
         onSatBriChange={(sat, bri) => onSatBriChange(sat, bri)} />
         <HuePicker onHueChange={(hue) => onHueChange(hue)} />
     </div>

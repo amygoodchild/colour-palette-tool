@@ -5,18 +5,18 @@ export function HSBtoHSL(h, s, b) {
   return {h, s, l};
 }
 
-export function hexToHSB(hex) {
+export function HextoHSB(hex) {
   let rgb = hexToRGB(hex);
-  return rgbToHSB(rgb.r, rgb.g, rgb.b);
+  return RGBtoHSB(rgb.r, rgb.g, rgb.b);
 }
 
-export function hsbToHex(h, s, b) {
-  let rgb = hsbToRGB(h, s, b);
+export function HSBtoHex(h, s, b) {
+  let rgb = HSBtoRGB(h, s, b);
 
-  return rgbToHex(rgb.r, rgb.g, rgb.b);
+  return RGBtoHex(rgb.r, rgb.g, rgb.b);
 }
 
-export function hexToRGB(hex) {
+export function HextoRGB(hex) {
   hex = hex.replace('#', '');
   var aRgbHex = hex.match(/.{1,2}/g);
  
@@ -27,7 +27,7 @@ export function hexToRGB(hex) {
   };
 }
 
-export function rgbToHSB(r, g, b) {
+export function RGBtoHSB(r, g, b) {
   r /= 255, g /= 255, b /= 255;
 
   let max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -50,7 +50,7 @@ export function rgbToHSB(r, g, b) {
   return { h: h * 360, s: s * 100, b: v * 100 };
 }
 
-export function hsbToRGB(h, s, v) {
+export function HSBtoRGB(h, s, v) {
   s /= 100;
   v /= 100;
 
@@ -64,7 +64,7 @@ export function hsbToRGB(h, s, v) {
   return { r, g, b };
 }
 
-export function rgbToHex(r, g, b) {
+export function RGBtoHex(r, g, b) {
   let toHex = (c) => {
       let hex = c.toString(16);
       return hex.length == 1 ? "0" + hex : hex;

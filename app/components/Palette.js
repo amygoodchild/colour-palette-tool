@@ -15,7 +15,7 @@ export default function Palette({currentColorHSL, currentColorHSB}){
   return(
     <div className="PALETTE flex-1" 
       style={{
-        background: `hsl(${currentColorHSL.hue}, ${currentColorHSL.sat}%, ${currentColorHSL.lig}%)`
+        background: `hsl(${currentColorHSL.h}, ${currentColorHSL.s}%, ${currentColorHSL.l}%)`
       }}>
       
     </div>
